@@ -1,0 +1,49 @@
+{% load_yaml as etcd_servers %}
+master-1: 
+  ip: 172.31.0.4
+  host: master-1
+master-2:
+  ip: 172.31.0.5
+  host: master-2
+{% endload %}
+
+{% load_yaml as cluster_conf %}
+clusterCIDR: 172.31.0.0/20
+LOADBALANCER_ADDRESS: 172.31.0.6
+working_directory: /Users/imankurniawan/repo/kubernetes-the-hard-way/salt
+cluster: kubernetes-the-hard-way
+{% endload %}
+
+{% load_yaml as worker_servers %}
+worker-1: 
+  ip: 172.31.0.7
+  host: worker-1
+worker-2:
+  ip: 172.31.0.8
+  host: worker-2
+{% endload %}
+
+{% load_yaml as kubeapi_certificates %}
+- ca.crt 
+- ca.key 
+- kube-apiserver.crt 
+- kube-apiserver.key 
+- service-account.key 
+- service-account.crt 
+- etcd-server.key 
+- etcd-server.crt 
+- encryption-config.yaml
+{% endload %}
+
+{% load_yaml as docker_pkgs %}
+- apt-transport-https 
+- ca-certificates 
+- curl 
+- gnupg-agent 
+- software-properties-common
+- docker-ce 
+- docker-ce-cli 
+- containerd.io
+{% endload %}
+
+

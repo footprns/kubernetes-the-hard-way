@@ -51,3 +51,8 @@ service-account-csr.json
 ubuntu-bionic*.log
 .vagrant
 temp
+
+**/.env/**
+**/.terraform/**
+**/*.tfstate.*
+**/*.tfstate

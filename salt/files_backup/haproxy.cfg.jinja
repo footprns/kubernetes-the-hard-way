@@ -1,0 +1,13 @@
+frontend kubernetes
+    bind {{ internal_ip }}:6443
+    option tcplog
+    mode tcp
+    default_backend kubernetes-master-nodes
+
+backend kubernetes-master-nodes
+    mode tcp
+    balance roundrobin
+    option tcp-check
+    {% for item in etcd_servers -%}
+    server {{ etcd_servers[item]['host'] }} {{ etcd_servers[item]['ip'] }}:6443 check fall 3 rise 2
+    {% endfor %}

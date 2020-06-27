@@ -1,0 +1,29 @@
+module "dev-elb" {
+  source = "./modules/alb"
+  name = "dev-elb"
+  # security_groups = ["${module.salt-master.id}"]
+  load_balancer_type = "network"
+  # certificate_arn = aws_acm_certificate.kube-api.arn
+}
+
+module "dev-elb-listener" {
+  source = "./modules/alb-listener"
+  name = "dev-elb"
+  # certificate_arn = module.kube-api-cert.arn
+  load_balancer_arn = module.dev-elb.arn
+}
+
+module "master-1-attachment" {
+    source = "./modules/lb-target-group-attachment"
+    target_group_arn = module.dev-elb-listener.arn
+    target_id = module.master-1.id
+    port = 6443
+}
+
+module "master-2-attachment" {
+    source = "./modules/lb-target-group-attachment"
+    target_group_arn = module.dev-elb-listener.arn
+    target_id = module.master-2.id
+    port = 6443
+}
+

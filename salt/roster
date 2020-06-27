@@ -1,0 +1,29 @@
+master-1:
+  host: 18.138.232.241 # The IP addr or DNS hostname
+  user: ubuntu         # Remote executions will be executed as user fred
+  priv: /Users/imankurniawan/.ssh/id_rsa  
+  sudo: True         # Whether to sudo to root, not enabled by default
+
+master-2:
+  host: 13.251.114.114 # The IP addr or DNS hostname
+  user: ubuntu         # Remote executions will be executed as user fred
+  priv: /Users/imankurniawan/.ssh/id_rsa  
+  sudo: True         # Whether to sudo to root, not enabled by default
+
+worker-1:
+  host: 13.251.125.210 # The IP addr or DNS hostname
+  user: ubuntu         # Remote executions will be executed as user fred
+  priv: /Users/imankurniawan/.ssh/id_rsa  
+  sudo: True         # Whether to sudo to root, not enabled by default
+
+worker-2:
+  host: 18.141.219.172 # The IP addr or DNS hostname
+  user: ubuntu         # Remote executions will be executed as user fred
+  priv: /Users/imankurniawan/.ssh/id_rsa  
+  sudo: True         # Whether to sudo to root, not enabled by default
+
+haproxy:
+  host: 18.141.168.72 # The IP addr or DNS hostname
+  user: ubuntu         # Remote executions will be executed as user fred
+  priv: /Users/imankurniawan/.ssh/id_rsa  
+  sudo: True         # Whether to sudo to root, not enabled by default

@@ -1,0 +1,79 @@
+{% set location_path = '/Users/imankurniawan/repo/kubernetes-the-hard-way/salt/files' %}
+{% set isreplace = True %}
+{% load_yaml as cert_properties %}
+{#
+admin:
+  CN: admin
+  O: system:masters
+kube-controller-manager:
+  CN: system:kube-controller-manager
+kube-proxy:
+  CN: system:kube-proxy
+kube-scheduler:
+  CN: system:kube-scheduler
+#}
+service-account:
+  CN: service-accounts
+{#
+kube-apiserver:
+  CN: kube-apiserver
+  subjectAltName: ['DNS.1:kubernetes','DNS.2:kubernetes.default','DNS.3:kubernetes.default.svc','DNS.4:kubernetes.default.svc.cluster.local','IP.1:10.96.0.1','IP.2:18.140.247.77','IP.3:18.140.234.114','IP.4:172.31.0.4','IP.5:172.31.0.5','IP.6:172.31.0.8','IP.7:127.0.0.1']
+  cert_type: client
+#}
+{% endload %}
+
+create root ca:
+  module.run:
+    - name: tls.create_ca 
+    - ca_name: ca
+    - bits: 2048
+    - cacert_path: {{ location_path }}
+    - ca_filename: ca
+    - CN: KUBERNETES-CA
+
+{% for item in cert_properties %}
+create {{ item }} csr:
+  module.run:
+    - name: tls.create_csr
+    - ca_name: ca
+    - bits: 2048
+    - CN: {{ cert_properties[item]['CN'] }}
+    {% if  cert_properties[item]['O'] is defined -%}
+    - O: {{ cert_properties[item]['O'] }}
+    {% endif %}
+    {% if  cert_properties[item]['subjectAltName'] is defined -%}
+    - subjectAltName: {{ cert_properties[item]['subjectAltName'] }}
+    {% endif %}
+    {% if  cert_properties[item]['cert_type'] is defined -%}
+    - cert_type: {{ cert_properties[item]['cert_type'] }}
+    {% endif %}
+    - cacert_path: {{ location_path }} 
+    - ca_filename: ca
+    - csr_path: {{ location_path }}/
+    - csr_filename: {{ item }} 
+    - replace: {{ isreplace }}
+
+create {{ item }} crt:
+  module.run:
+    - name: tls.create_ca_signed_cert
+    - ca_name: ca
+    - CN: {{ cert_properties[item]['CN'] }}
+    - days: 1000
+    - cacert_path: {{ location_path }} 
+    - ca_filename: ca
+    - cert_path: {{ location_path }}
+    - cert_filename: {{ item }}
+    {% if  cert_properties[item]['cert_type'] is defined -%}
+    - cert_type: {{ cert_properties[item]['cert_type'] }}
+    {% endif %}
+
+{% endfor %}
+
+{% for item in ['.crt', '.key'] %}
+copy root ca{{ item }}:
+  file.managed:
+    - name: '{{ location_path }}/ca{{ item }}'
+    - source: '{{ location_path }}/ca/ca{{ item }}'
+{% endfor %}
+
+

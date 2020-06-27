@@ -1,0 +1,10 @@
+module "kube-api-cert" {
+  source = "./modules/certificate"
+  private_key = "${path.module}/../salt/files/kube-apiserver.key"
+  certificate_body = "${path.module}/../salt/files/kube-apiserver.crt"
+  certificate_chain = "${path.module}/../salt/files/ca.crt"
+}
+
+output "debug" {
+    value = path.module
+}
